@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/mohuk/genie/handlers"
+	"github.com/mohuk/genie/manager"
 
 	"github.com/gorilla/mux"
 
@@ -28,11 +29,12 @@ const (
 
 func main() {
 	store := dbase.NewStore(*host, *port, *user, *password)
+	gm := manager.NewGenieManager(store)
 	r := mux.NewRouter()
 
-	r.HandleFunc("/db", handlers.GetDatabases(store)).Methods("GET")
-	r.HandleFunc("/db/{dbname}/tables", handlers.GetTables(store)).Methods("GET")
-	r.HandleFunc("/db/{dbname}/tables/{tableId}", handlers.GetColumns(store)).Methods("GET")
+	r.HandleFunc("/db", handlers.GetDatabases(gm)).Methods("GET")
+	r.HandleFunc("/db/{dbname}/tables", handlers.GetTables(gm)).Methods("GET")
+	r.HandleFunc("/db/{dbname}/tables/{tableId}", handlers.GetColumns(gm)).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", httpPort), r))
 }

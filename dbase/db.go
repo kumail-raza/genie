@@ -1,13 +1,7 @@
 package dbase
 
 import (
-	"errors"
-
 	"github.com/mohuk/genie/models"
-)
-
-var (
-	ErrNoRows = errors.New("no rows returned")
 )
 
 // Store database store interface

@@ -4,29 +4,22 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/mohuk/genie/httpio"
-
 	"github.com/darahayes/go-boom"
-
 	"github.com/gorilla/mux"
-
-	"github.com/mohuk/genie/dbase"
+	"github.com/mohuk/genie/manager"
 )
 
 // GetTables ...
-func GetTables(store dbase.Store) http.HandlerFunc {
+func GetTables(manager manager.GenieManager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		dbname := mux.Vars(r)["dbname"]
-		tables, err := store.GetTables(dbname)
+		tables, err := manager.GetTables(dbname)
 		if err != nil {
 			boom.Internal(w, err)
 			return
 		}
-		var resp []httpio.Table
-		for _, t := range tables {
-			resp = append(resp, httpio.UnmarshallTable(t))
-		}
-		err = json.NewEncoder(w).Encode(resp)
+		err = json.NewEncoder(w).Encode(tables)
 		if err != nil {
 			boom.Internal(w, err)
 			return
