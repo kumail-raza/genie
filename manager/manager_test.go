@@ -4,12 +4,14 @@ import (
 	"testing"
 
 	"github.com/mohuk/genie/dbase"
+	"github.com/mohuk/genie/formly"
 )
 
 func TestGetDatabases(t *testing.T) {
 
 	s := dbase.NewMockStore()
-	m := NewGenieManager(s)
+	mapper := formly.NewMockFormly()
+	m := NewGenieManager(s, mapper)
 	dbs, err := m.GetDatabases()
 	if err != nil {
 		t.Fail()
@@ -21,7 +23,8 @@ func TestGetDatabases(t *testing.T) {
 
 func TestGetColumns(t *testing.T) {
 	s := dbase.NewMockStore()
-	m := NewGenieManager(s)
+	mapper := formly.NewMockFormly()
+	m := NewGenieManager(s, mapper)
 	tName := "tableName"
 	form, err := m.GetColumns("dbname", tName)
 	if err != nil {
@@ -35,7 +38,8 @@ func TestGetColumns(t *testing.T) {
 func TestGetTables(t *testing.T) {
 
 	s := dbase.NewMockStore()
-	m := NewGenieManager(s)
+	mapper := formly.NewMockFormly()
+	m := NewGenieManager(s, mapper)
 	dbName := "dbname"
 	tables, err := m.GetTables(dbName)
 	if err != nil {

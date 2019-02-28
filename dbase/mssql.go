@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	_ "github.com/denisenkom/go-mssqldb"
+	"github.com/mohuk/genie/errors"
 	"github.com/mohuk/genie/models"
 )
 
@@ -23,7 +24,7 @@ func (db *MSSqlDatabase) GetDatabases() ([]models.Database, error) {
 	connStr := fmt.Sprintf("server=%s;port=%d;user id=%s;password=%s", db.Host, db.Port, db.User, db.Password)
 	conn, err := sql.Open("mssql", connStr)
 	if err != nil {
-		return nil, err
+		return nil, errors.NewErrDbConn(err.Error())
 	}
 	defer conn.Close()
 	q := fmt.Sprint("SELECT name FROM master.dbo.sysdatabases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb');")
@@ -49,7 +50,7 @@ func (db *MSSqlDatabase) Connect(dbName string) error {
 	connString := fmt.Sprintf("server=%s;user id=%s;password=%s;port=%d;database=%s;", db.Host, db.User, db.Password, db.Port, dbName)
 	conn, err := sql.Open("mssql", connString)
 	if err != nil {
-		return err
+		return errors.NewErrDbConn(err.Error())
 	}
 	db.Conn = conn
 	return nil
