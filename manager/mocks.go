@@ -2,15 +2,15 @@ package manager
 
 import (
 	"github.com/mohuk/genie/dbase"
+	"github.com/mohuk/genie/formly"
 	"github.com/mohuk/genie/httpio"
-	"github.com/mohuk/genie/models"
 )
 
 type mockmanager struct {
 	store dbase.Store
 }
 
-func (m *mockmanager) GetColumns(dbname, tableName string) (*models.TableForm, error) {
+func (m *mockmanager) GetColumns(dbname, tableName string) (*formly.TableForm, error) {
 	return nil, nil
 }
 func (m *mockmanager) GetDatabases() ([]httpio.Database, error) {

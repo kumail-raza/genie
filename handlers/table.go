@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/darahayes/go-boom"
@@ -14,7 +13,6 @@ import (
 // GetTables ...
 func GetTables(manager manager.GenieManager) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 		dbname := mux.Vars(r)["dbname"]
 		tables, err := manager.GetTables(dbname)
 		if err != nil {
@@ -28,7 +26,6 @@ func GetTables(manager manager.GenieManager) http.HandlerFunc {
 			}
 		}
 		err = httpio.RespondJSON(w, tables)
-		err = json.NewEncoder(w).Encode(tables)
 		if err != nil {
 			boom.ExpectationFailed(w, err.Error())
 			return

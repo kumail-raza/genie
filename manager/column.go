@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/mohuk/genie/errors"
-	"github.com/mohuk/genie/models"
+	"github.com/mohuk/genie/formly"
 )
 
 // GetColumns ...
-func (g *genieManager) GetColumns(dbname, tableName string) (*models.TableForm, error) {
+func (g *genieManager) GetColumns(dbname, tableName string) (*formly.TableForm, error) {
 
 	columns, err := g.store.GetColumns(dbname, tableName)
 	if err != nil {
@@ -17,19 +17,12 @@ func (g *genieManager) GetColumns(dbname, tableName string) (*models.TableForm, 
 	if len(columns) == 0 {
 		return nil, errors.NewErrNoRows(fmt.Sprintf("table %s does not exist", tableName))
 	}
-	tf := models.TableForm{
+	tf := formly.TableForm{
 		TableName: tableName,
-		Template:  make([]models.Template, len(columns)),
+		Template:  make([]formly.Template, len(columns)),
 	}
 	for j, col := range columns {
-		tf.Template[j] = models.Template{
-			Key:  col.Name.String,
-			Type: "input",
-			TemplateOps: models.TemplateOpts{
-				Type:        models.Type(col.Type.String),
-				PlaceHolder: fmt.Sprintf("Enter %s...", col.Name.String),
-			},
-		}
+		tf.Template[j] = g.formly.MapColumn(col)
 	}
 	return &tf, nil
 }
